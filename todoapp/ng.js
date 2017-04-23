@@ -5,6 +5,7 @@ app.controller('todoCtrl', function($scope) {
     $scope.addItem = function() {
         var input = $scope.todoInput;
         if (input != "" && input != null){
+            console.log("good info");
             $scope.todoList.push({todoText: input, done:false});
             $scope.todoInput = "";
         }
