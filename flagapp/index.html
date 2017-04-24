@@ -24,7 +24,7 @@
             <th><a href="" ng-click="sortField = 'name'; order = !order">Country Name</a></th>
           </tr>
           <tr ng-repeat="country in countries | filter:selected | orderBy:sortField:order">
-            <td><img src="{{'svg/' + country.code + '.svg'}}" width="25"></td>
+            <td><img src="svg/{{ country.code | lowercase}}.svg" width="25"></td>
             <td>{{country.code}}</td>
             <td>{{country.name}}</td>
           </tr>
