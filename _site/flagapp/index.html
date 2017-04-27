@@ -1,0 +1,40 @@
+<html ng-app="countryApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Angular JS Flag Project</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+    <script src="ng.js"></script>
+  </head>
+  <body ng-controller="CountryCtrl">
+     <div class="container" align="middle" style="padding-top:10px" style="width:300px">
+      <h3 style="width:300px">Country and Flag Overview</h3>
+      <h5 style="width:300px">Click a country name to be taken to that country's Wikipedia site 🌍</h5>
+      <h5 style="width:300px">Sort countries by clicking on the headers! 😺</h5>
+      <p style="width:300px">Interested in the code? <a href="//github.com/thomasnilsson/thomasnilsson.github.io/tree/master/flagapp">Visit the GitHub repository!</a> 😻</p>
+      <!-- SEARCH FIELD -->
+      <div class="form-group row" align="middle" style="width:300px; padding-top:20px">
+        <h4>Look up a specific country</h4>
+        <input ng-model="selected" style="height:50px" class="form-control" placeholder="Search for a country or code">
+      </div>
+
+      <!-- TABLE -->
+      
+        <table class="table table-striped" style="width:300px">
+          <tr>
+            <th style="width:250px"><a href="" ng-click="sortField = 'name'; order = !order">Country Name</a></th>
+            <th style="width:15px"><a href="" ng-click="sortField = 'code'; order = !order">Code</a></th>
+            <th style="width:35px"><a href="" ng-click="sortField = 'name'; order = !order">Flag</a></th>
+          </tr>
+          <tr ng-repeat="country in countries | filter:selected | orderBy:sortField:order">
+            <td><a href="https://en.wikipedia.org/wiki/{{country.name}}">{{country.name}}</a></td>
+            <td>{{country.code}}</td>
+            <td><img src="svg/{{ country.code | lowercase}}.svg" width="35"></td>
+          </tr>
+        </table>
+      
+    
+    </div>
+  </body>
+</html>
