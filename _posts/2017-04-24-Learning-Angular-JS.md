@@ -27,7 +27,12 @@ I therefore made a python script to translate this `countries` object into indiv
 
 By doing so, the angular functions `filter` and `orderBy` can now be applied to the country names, as well as the ISO codes: `ng-repeat = country in countries | filter:selected | orderBy:sortField:order`
 
-The links to wikipedia were easy to generate with an angular expression: `en.wikipedia.org/wiki/{{country.name}}`, and even in the case of country names including space separated words, such as `United States`, wikipedia will automatically convert spaces ` ` into underscores `_`: [en.wikipedia.org/wiki/United States](https://en.wikipedia.org/wiki/United States)
+The links to wikipedia were easy to generate with an angular expression:
+```javascript
+en.wikipedia.org/wiki/{{country.name}}
+```
+
+, and even in the case of country names including space separated words, such as `United States`, wikipedia will automatically convert spaces ` ` into underscores `_`: [en.wikipedia.org/wiki/United States](https://en.wikipedia.org/wiki/United States)
 
 
 
