@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 ## A Couple of Projects
 I'm starting to learn angular, and so I made a couple of projects.
