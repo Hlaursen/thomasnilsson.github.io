@@ -11,7 +11,7 @@
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/</loc>
+<loc>http://localhost:4000/blog/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/flagapp/backup/index.html</loc>
@@ -20,6 +20,10 @@
 <url>
 <loc>http://localhost:4000/flagapp/index.html</loc>
 <lastmod>2017-04-27T17:53:11+02:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/index.html</loc>
+<lastmod>2017-04-28T02:21:30+02:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/org/about.html</loc>
