@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 In June I'm doing a data analysis course, using Python, so I thought I would wanna learn me some Python!
 
