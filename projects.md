@@ -10,3 +10,4 @@ permalink: /projects
 
 [My Company](https://edea.dk)
 
+[Jupyter Notebooks](http://localhost:8888/tree?token=f397262cd4b19aaa48781b47a32a8fd58dace93eb1f3dc71)
