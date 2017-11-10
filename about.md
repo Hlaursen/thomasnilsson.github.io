@@ -3,10 +3,26 @@ layout: page
 title: About
 published: true
 ---
+My name is Thomas, and I'm an upcoming software developer from Denmark.
+Currently I do freelance software projects with Danish Healthcare Sector along with going go university.
 
-### More Information
-My name is Thomas, and I aspire to be a software developer. Currently, I am working as a freelancer doing mobile- as well as web-based applications.
+This website serves as a portfolio, where my projects will be on display.
 
-Currently I am studying at the Technical University of Denmark, and expect to have a Software Engineering MSc by 2019.
 
-This website/blog serves as my portfolio where I will be documenting my journey and sharing what I learn!
+##### Higher Education:
+BSc Computer Science (2017)
+* Thesis: iOS application for diagnosing Sleep Apnea. 
+* Supervisors: Helge D. Sørensen, Poul Jennum MD
+  
+MSc Computer Science (2019)
+* _To be determined..._
+
+##### Software Skillset:
+* Android Development (Java)
+* iOS Development (Swift)
+* Python (Flask)
+* JavaScript (Vanilla/Angular/JQuery)
+* PHP
+* MATLAB
+* Linux Bash
+* C
