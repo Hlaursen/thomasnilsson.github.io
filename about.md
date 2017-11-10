@@ -5,7 +5,7 @@ published: true
 ---
 My name is Thomas, and I'm an upcoming software developer from Denmark.
 
-Currently I do freelance software projects with Danish Healthcare Sector along with attending The Technical University of Denmark (DTU).
+Currently I do freelance software projects with Danish Healthcare Sector alongside attending The Technical University of Denmark (DTU).
 
 This website serves as a portfolio, where my projects will be on display.
 
