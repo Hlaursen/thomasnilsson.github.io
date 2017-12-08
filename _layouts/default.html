@@ -16,10 +16,9 @@
   </head>
 
   <body>
+    <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script>
     <div class="wrapper-masthead">
       <div class="container">
-        <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script>
-        <div class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD"  data-secondary="BTC"></div>
 
         <header class="masthead clearfix">
           <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" /></a>
@@ -39,6 +38,9 @@
     </div>
 
     <div id="main" role="main" class="container">
+      <div class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="USD"></div>
+      <div class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD"></div>
+      <div class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="USD"></div>
       {{ content }}
     </div>
 
