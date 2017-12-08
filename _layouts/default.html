@@ -38,9 +38,13 @@
     </div>
 
     <div id="main" role="main" class="container">
-      <div style="width:33%" class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="USD"></div>
-      <div style="width:33%" class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD"></div>
-      <div style="width:33%" class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="USD"></div>
+      <!-- Crypto Trackers -->
+      <div>
+          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="USD"></div>
+          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD"></div>
+          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="USD"></div>
+      </div>
+      
       {{ content }}
     </div>
 
