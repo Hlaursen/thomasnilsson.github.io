@@ -38,14 +38,13 @@
     </div>
 
     <div id="main" role="main" class="container">
+      {{ content }}
       <!-- Crypto Trackers -->
       <div>
-          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="USD"></div>
-          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD"></div>
-          <div style="width:33%; display:inline-block" class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="USD"></div>
+         <div style="display: inline-flex;" class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="USD" data-secondary="" data-ticker="true" data-rank="false" data-marketcap="false" data-volume="false" data-stats="USD" data-statsticker="false"></div>
+         <div style="display: inline-flex;" class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="USD" data-secondary="" data-ticker="true" data-rank="false" data-marketcap="false" data-volume="false" data-stats="USD" data-statsticker="false"></div>
+         <div style="display: inline-flex;" class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="USD" data-secondary="" data-ticker="true" data-rank="false" data-marketcap="false" data-volume="false" data-stats="USD" data-statsticker="false"></div>
       </div>
-      
-      {{ content }}
     </div>
 
     <div class="wrapper-footer">
