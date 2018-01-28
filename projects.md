@@ -4,7 +4,7 @@ title: Projects
 permalink: /projects
 ---
 
-[Flag and Country Overview](https://thomasnilsson.github.io/flagapp)
+[Country Overview](https://thomasnilsson.github.io/flagapp)
 
-[Freelancing](https://edea.dk)
+[Social Data Analysis and Visualization](https://thomasnilsson.github.io/02806)
 
