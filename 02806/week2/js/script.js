@@ -22,6 +22,26 @@ let randomArray = function(l, max) {
 	return numbers
 }
 
+let randomValuesX = function(l, max) {
+	let numbers = []
+	for (i = 1; i <= l; i++){
+		let x = Math.round(Math.random() * max)
+		let obj = { "x" : x }
+		numbers.push(obj)
+	}
+	return numbers
+}
+
+let randomValuesY = function(l, max) {
+	let numbers = []
+	for (i = 1; i <= l; i++){
+		let x = Math.round(Math.random() * max)
+		let obj = { "y" : x }
+		numbers.push(obj)
+	}
+	return numbers
+}
+
 let animateChart = function(dataset) {
 	// Remove old graphics
 	barSvg.selectAll("rect").remove()
@@ -117,23 +137,23 @@ let scatterPlotSvg = scatterPlotDiv
 	.attr("width", chartWidth)
 	.attr("height", chartHeight)
 
-let animateScatterPlot = function(dataset) {
-	// Remove old graphics
-	scatterPlotSvg.selectAll("circle").remove()
+// let animateScatterPlot = function(dataset) {
+// 	// Remove old graphics
+// 	scatterPlotSvg.selectAll("circle").remove()
 
-	scatterPlotSvg.selectAll("circle")
-		.data(dataset)
-		.enter()
-		.append("circle")
-		.attr("cx", d => d[0] + 100)
-		.attr("cy", d => d[1])
-		.attr("r", 2)
+// 	scatterPlotSvg.selectAll("circle")
+// 		.data(dataset)
+// 		.enter()
+// 		.append("circle")
+// 		.attr("cx", d => d[0] + 100)
+// 		.attr("cy", d => d[1])
+// 		.attr("r", 2)
 	
-	console.log(dataset)
+// 	console.log(dataset)
 
-}
+// }
 
-let animateScatterPlotCSV = function(jsonData) {
+let animateScatterPlot = function(jsonData) {
 	// Remove old graphics
 	scatterPlotSvg.selectAll("circle").remove()
 
@@ -150,11 +170,21 @@ let animateScatterPlotCSV = function(jsonData) {
 
 let drawScatterPlot = function() {
 	let length = 25
-	let X = randomArray(length, chartWidth)
-	let Y = randomArray(length, chartHeight)
+	// let X = randomArray(length, chartWidth)
+	// let Y = randomArray(length, chartHeight)
+	let X = randomValuesX(length, chartWidth)
+	let Y = randomValuesY(length, chartHeight)
+	let dataset = []
+	for (i in X) {
+		let px = X[i].x
+		let py = Y[i].y
+		let p = {'x' : px, 'y' : py}
+		dataset.push(p)
+	}
+	console.log(dataset)
 
 	// Zip X and Y
-	let dataset = X.map((x,i) => [x, Y[i]])
+	// let dataset = X.map((x,i) => [x, Y[i]])
 	animateScatterPlot(dataset)
 }
 
@@ -164,13 +194,13 @@ addParagraph(scatterPlotDiv, "Figure: A scatter plot")
 let drawScatterPlotCSV = function() {
 	d3.csv('data/xy_data.csv', function(jsonData) {
 		console.log(jsonData)
-		animateScatterPlotCSV(jsonData)
+		animateScatterPlot(jsonData)
 	})	
 }
 
 
 // PRESIDENTS
-let presidentsDiv = body.select("#barChartDiv")
+let presidentsDiv = body.select("#presidentsDiv")
 let presidentsSvg = presidentsDiv.append("svg")
 	.attr("width", chartWidth)
 	.attr("height", chartHeight)
@@ -184,17 +214,18 @@ let animatePresidentsPlotRandom = function(dataset) {
 		.enter()
 		.append("circle")
 		.attr("cx", d => d)
-		.attr("cy", d => d)
+		.attr("cy", d => 150)
 		.attr("r", 2)
 		.attr("fill", "white")
 		.attr("stroke", "black")
-	console.log(dataset)
+
+
 }
 
 let drawPresidentsPlotRandom = function() {
 	let months = []
 	for (i = 0; i < 43; i++){
-		let x = Math.round(Math.random(100) * 200)
+		let x = Math.round(Math.random(100) * chartWidth)
 		months.push(x)
 	}
 	animatePresidentsPlotRandom(months)
@@ -204,25 +235,36 @@ drawPresidentsPlotRandom()
 
 
 
-let animatePresidentsPlotCSV = function(jsonData) {
+let animatePresidentsPlotCSV = function(dataset, max) {
 	// Remove old graphics
 	presidentsSvg.selectAll("circle").remove()
 
+	let scale = chartWidth / max
+
 	presidentsSvg.selectAll("circle")
-		.data(jsonData)
+		.data(dataset)
 		.enter()
 		.append("circle")
-		.attr("cx", (d,i) => d.Months)
-		.attr("cy", (d,i) => chartHeight - 50)
-		.attr("r", 2)
-		.attr("fill", "white")
+		.attr("cx", d => d.months * scale)
+		.attr("cy", d => chartHeight * Math.random(100))
+		.attr("r", 5)
 		.attr("stroke", "black")
+		.attr("fill-opacity", 0.0)
+	console.log(dataset)
 }
 
 let drawPresidentsPlotCSV = function() {
 	d3.csv('data/presidents.csv', function(jsonData) {
-		console.log(jsonData)
-		animatePresidentsPlotCSV(jsonData)
+		let max = 0
+
+		for (i in jsonData) {
+			let m = jsonData[i].months
+			if (m > max) {
+				max = m
+			}
+		}
+
+		animatePresidentsPlotCSV(jsonData, max)
 	})	
 }
 
