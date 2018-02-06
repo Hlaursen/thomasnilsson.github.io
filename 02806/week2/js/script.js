@@ -22,13 +22,10 @@ let randomArray = function(l, max) {
 	return numbers
 }
 
-let drawChart = function() {
+let animateChart = function(dataset) {
 	// Remove old graphics
 	barSvg.selectAll("rect").remove()
 	barSvg.selectAll("text").remove()
-
-	let length = 25
-	let dataset = randomArray(length, chartHeight)	
 
 	// Set attributes
 	let padding = 1
@@ -60,6 +57,54 @@ let drawChart = function() {
 
 	console.log("chart made")
 }
+
+let animateChartCSV = function(jsonData) {
+	// Remove old graphics
+	barSvg.selectAll("rect").remove()
+	barSvg.selectAll("text").remove()
+
+	// Set attributes
+	let padding = 1
+	let barWidth = 20 
+	let deltaX = barWidth + padding
+
+	// Draw a vertical rectangle for each datapoint
+	barSvg.selectAll("rect")
+		.data(jsonData)
+		.enter()
+		.append("rect")
+		.attr("x", (d,i) => i * deltaX)
+		.attr("y", d => chartHeight - d.x)
+		.attr("width", barWidth)
+		.attr("height", d => d.x)
+		.attr("fill", d => "rgb(" + Math.round(d.x * 2) + ", 0, 0)")
+
+	// Draw values of each bar as text
+	barSvg.selectAll("text")
+		.data(jsonData)
+		.enter()
+		.append("text")
+		.text(d => d.x)
+		.attr("fill", "white")
+		.attr("font-size", "8")
+		.attr("x", (d,i) => i * deltaX + 3)
+		.attr("y", (d,i) => chartHeight - d.x + 12)
+
+	console.log("chart made")
+}
+
+let drawChart = function() {
+	let length = 25
+	let dataset = randomArray(length, chartHeight)
+	animateChart(dataset)
+}
+
+let drawChartCSV = function() {
+	d3.csv('data/x_data.csv', function(jsonData) {
+		animateChartCSV(jsonData)
+	})	
+}
+
 drawChart()
 
 addParagraph(barChartDiv, "Figure: A bar chart")
@@ -72,34 +117,114 @@ let scatterPlotSvg = scatterPlotDiv
 	.attr("width", chartWidth)
 	.attr("height", chartHeight)
 
-let drawScatterPlot = function() {
+let animateScatterPlot = function(dataset) {
 	// Remove old graphics
 	scatterPlotSvg.selectAll("circle").remove()
 
+	scatterPlotSvg.selectAll("circle")
+		.data(dataset)
+		.enter()
+		.append("circle")
+		.attr("cx", d => d[0] + 100)
+		.attr("cy", d => d[1])
+		.attr("r", 2)
+	
+	console.log(dataset)
+
+}
+
+let animateScatterPlotCSV = function(jsonData) {
+	// Remove old graphics
+	scatterPlotSvg.selectAll("circle").remove()
+
+	scatterPlotSvg.selectAll("circle")
+		.data(jsonData)
+		.enter()
+		.append("circle")
+		.attr("cx", (d,i) => d.x)
+		.attr("cy", (d,i) => chartHeight - d.y)
+		.attr("r", 2)
+		.attr("fill", "white")
+		.attr("stroke", "black")
+}
+
+let drawScatterPlot = function() {
 	let length = 25
 	let X = randomArray(length, chartWidth)
 	let Y = randomArray(length, chartHeight)
 
 	// Zip X and Y
 	let dataset = X.map((x,i) => [x, Y[i]])
-
-	while (dataset.length < 1) {
-		console.log("waiting for csv")
-	}
-
-	scatterPlotSvg.selectAll("circle")
-		.data(dataset)
-		.enter()
-		.append("circle")
-		.attr("cx", d => d[0]+ 100)
-		.attr("cy", d => d[1])
-		.attr("r", 2)
+	animateScatterPlot(dataset)
 }
 
 drawScatterPlot()
 addParagraph(scatterPlotDiv, "Figure: A scatter plot")
 
+let drawScatterPlotCSV = function() {
+	d3.csv('data/xy_data.csv', function(jsonData) {
+		console.log(jsonData)
+		animateScatterPlotCSV(jsonData)
+	})	
+}
 
+
+// PRESIDENTS
+let presidentsDiv = body.select("#barChartDiv")
+let presidentsSvg = presidentsDiv.append("svg")
+	.attr("width", chartWidth)
+	.attr("height", chartHeight)
+
+let animatePresidentsPlotRandom = function(dataset) {
+	// Remove old graphics
+	presidentsSvg.selectAll("circle").remove()
+
+	presidentsSvg.selectAll("circle")
+		.data(dataset)
+		.enter()
+		.append("circle")
+		.attr("cx", d => d)
+		.attr("cy", d => d)
+		.attr("r", 2)
+		.attr("fill", "white")
+		.attr("stroke", "black")
+	console.log(dataset)
+}
+
+let drawPresidentsPlotRandom = function() {
+	let months = []
+	for (i = 0; i < 43; i++){
+		let x = Math.round(Math.random(100) * 200)
+		months.push(x)
+	}
+	animatePresidentsPlotRandom(months)
+}
+
+drawPresidentsPlotRandom()
+
+
+
+let animatePresidentsPlotCSV = function(jsonData) {
+	// Remove old graphics
+	presidentsSvg.selectAll("circle").remove()
+
+	presidentsSvg.selectAll("circle")
+		.data(jsonData)
+		.enter()
+		.append("circle")
+		.attr("cx", (d,i) => d.Months)
+		.attr("cy", (d,i) => chartHeight - 50)
+		.attr("r", 2)
+		.attr("fill", "white")
+		.attr("stroke", "black")
+}
+
+let drawPresidentsPlotCSV = function() {
+	d3.csv('data/presidents.csv', function(jsonData) {
+		console.log(jsonData)
+		animatePresidentsPlotCSV(jsonData)
+	})	
+}
 
 
 // let barContainer = body.append("div")

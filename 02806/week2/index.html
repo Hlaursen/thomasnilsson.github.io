@@ -16,6 +16,18 @@
 
 		<h2>02806 - Week 2</h2>
 
+		<h3>Presidents</h3>
+
+		<div id="presidentsDiv" style="border: 1px solid black; width: 502px; height: 202px; margin: auto">
+			<!-- Content will be put here by script.js -->
+		</div>
+
+		<div id="buttonDiv" style="width: 150px; height: auto; margin: auto; margin-top: 30px">
+			<button onclick="drawPresidentsPlotRandom()" class="btn btn-danger btn-block">Random</button>
+			<button onclick="drawPresidentsPlotCSV()" class="btn btn-danger btn-block">From CSV</button>
+			
+		</div>
+
 		<h3>Barchart</h3>
 
 		<div id="barChartDiv" style="border: 1px solid black; width: 502px; height: 202px; margin: auto">
@@ -23,7 +35,8 @@
 		</div>
 
 		<div id="buttonDiv" style="width: 150px; height: auto; margin: auto; margin-top: 30px">
-			<button onclick="drawChart()" class="btn btn-danger btn-block">Click Me</button>
+			<button onclick="drawChart()" class="btn btn-danger btn-block">Random</button>
+			<button onclick="drawChartCSV()" class="btn btn-danger btn-block">From CSV</button>
 		</div>
 
 		<h3>Scatter Plot</h3>
@@ -33,8 +46,10 @@
 		</div>
 
 		<div id="buttonDiv" style="width: 150px; height: auto; margin: auto; margin-top: 30px">
-			<button onclick="drawScatterPlot()" class="btn btn-danger btn-block">Click Me</button>
+			<button onclick="drawScatterPlot()" class="btn btn-danger btn-block">Random</button>
+			<button onclick="drawScatterPlotCSV()" class="btn btn-danger btn-block">From CSV</button>
 		</div>
+
 
 
 
