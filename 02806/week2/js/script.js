@@ -13,14 +13,14 @@ let addParagraph = (c,t) => c
 	.append("p")
 	.text(t)
 
-let randomArray = function(l, max) {
-	let numbers = []
-	for (i = 1; i <= l; i++){
-		let x = Math.round(Math.random() * max)
-		numbers.push(x)
-	}
-	return numbers
-}
+// let randomArray = function(l, max) {
+// 	let numbers = []
+// 	for (i = 1; i <= l; i++){
+// 		let x = Math.round(Math.random() * max)
+// 		numbers.push(x)
+// 	}
+// 	return numbers
+// }
 
 let randomValuesX = function(l, max) {
 	let numbers = []
@@ -42,43 +42,7 @@ let randomValuesY = function(l, max) {
 	return numbers
 }
 
-let animateChart = function(dataset) {
-	// Remove old graphics
-	barSvg.selectAll("rect").remove()
-	barSvg.selectAll("text").remove()
-
-	// Set attributes
-	let padding = 1
-	let barWidth = 20 
-	let deltaX = barWidth + padding
-
-	// Draw a vertical rectangle for each datapoint
-	barSvg.selectAll("rect")
-		.data(dataset)
-		.enter()
-		.append("rect")
-		.attr("x", (d,i) => i * deltaX)
-		.attr("y", d => chartHeight - d)
-		.attr("width", barWidth)
-		.attr("height", d => d)
-		.attr("fill", d => "rgb(" + Math.round(d*2) + ", 0, 0)")
-
-	// Draw values of each bar as text
-	barSvg.selectAll("text")
-		.data(dataset)
-		.enter()
-		.append("text")
-		.text(d => d)
-		.attr("fill", "white")
-		.attr("font-size", "8")
-		.attr("x", (d,i) => i * deltaX + 3)
-		.attr("y", (d,i) => chartHeight - d + 12)
-
-
-	console.log("chart made")
-}
-
-let animateChartCSV = function(jsonData) {
+let animateChart = function(jsonData) {
 	// Remove old graphics
 	barSvg.selectAll("rect").remove()
 	barSvg.selectAll("text").remove()
@@ -110,18 +74,18 @@ let animateChartCSV = function(jsonData) {
 		.attr("x", (d,i) => i * deltaX + 3)
 		.attr("y", (d,i) => chartHeight - d.x + 12)
 
-	console.log("chart made")
 }
 
 let drawChart = function() {
 	let length = 25
-	let dataset = randomArray(length, chartHeight)
+	// let dataset = randomArray(length, chartHeight)
+	let dataset = randomValuesX(length, chartHeight)
 	animateChart(dataset)
 }
 
 let drawChartCSV = function() {
 	d3.csv('data/x_data.csv', function(jsonData) {
-		animateChartCSV(jsonData)
+		animateChart(jsonData)
 	})	
 }
 
@@ -136,22 +100,6 @@ let scatterPlotSvg = scatterPlotDiv
 	.append("svg")
 	.attr("width", chartWidth)
 	.attr("height", chartHeight)
-
-// let animateScatterPlot = function(dataset) {
-// 	// Remove old graphics
-// 	scatterPlotSvg.selectAll("circle").remove()
-
-// 	scatterPlotSvg.selectAll("circle")
-// 		.data(dataset)
-// 		.enter()
-// 		.append("circle")
-// 		.attr("cx", d => d[0] + 100)
-// 		.attr("cy", d => d[1])
-// 		.attr("r", 2)
-	
-// 	console.log(dataset)
-
-// }
 
 let animateScatterPlot = function(jsonData) {
 	// Remove old graphics
@@ -170,11 +118,10 @@ let animateScatterPlot = function(jsonData) {
 
 let drawScatterPlot = function() {
 	let length = 25
-	// let X = randomArray(length, chartWidth)
-	// let Y = randomArray(length, chartHeight)
 	let X = randomValuesX(length, chartWidth)
 	let Y = randomValuesY(length, chartHeight)
 	let dataset = []
+	
 	for (i in X) {
 		let px = X[i].x
 		let py = Y[i].y
@@ -183,8 +130,6 @@ let drawScatterPlot = function() {
 	}
 	console.log(dataset)
 
-	// Zip X and Y
-	// let dataset = X.map((x,i) => [x, Y[i]])
 	animateScatterPlot(dataset)
 }
 
@@ -204,45 +149,20 @@ let presidentsDiv = body.select("#presidentsDiv")
 let presidentsSvg = presidentsDiv.append("svg")
 	.attr("width", chartWidth)
 	.attr("height", chartHeight)
+let labelSvg = presidentsDiv.append("svg")
+	.attr("width", chartWidth)
+	.attr("height", 20)
 
-let animatePresidentsPlotRandom = function(dataset) {
+let animatePresidentsPlot = function(jsonData, max) {
 	// Remove old graphics
 	presidentsSvg.selectAll("circle").remove()
-
-	presidentsSvg.selectAll("circle")
-		.data(dataset)
-		.enter()
-		.append("circle")
-		.attr("cx", d => d)
-		.attr("cy", d => 150)
-		.attr("r", 2)
-		.attr("fill", "white")
-		.attr("stroke", "black")
-
-
-}
-
-let drawPresidentsPlotRandom = function() {
-	let months = []
-	for (i = 0; i < 43; i++){
-		let x = Math.round(Math.random(100) * chartWidth)
-		months.push(x)
-	}
-	animatePresidentsPlotRandom(months)
-}
-
-drawPresidentsPlotRandom()
-
-
-
-let animatePresidentsPlotCSV = function(dataset, max) {
-	// Remove old graphics
-	presidentsSvg.selectAll("circle").remove()
+	labelSvg.selectAll("text").remove()
+	presidentsDiv.selectAll("p").remove()
 
 	let scale = chartWidth / max
 
 	presidentsSvg.selectAll("circle")
-		.data(dataset)
+		.data(jsonData)
 		.enter()
 		.append("circle")
 		.attr("cx", d => d.months * scale)
@@ -250,7 +170,35 @@ let animatePresidentsPlotCSV = function(dataset, max) {
 		.attr("r", 5)
 		.attr("stroke", "black")
 		.attr("fill-opacity", 0.0)
-	console.log(dataset)
+	console.log(jsonData)
+
+	// Draw values of each bar as text
+	let labels = [0, max/4, max/2, 3*max/4, max]
+	labelSvg.selectAll("text")
+		.data(labels)
+		.enter()
+		.append("text")
+		.text(label => Math.round(label))
+		.attr("fill", "black")
+		.attr("font-size", "14")
+		.attr("x", label => label * 0.97 * scale)
+		.attr("y", 10)
+
+	addParagraph(presidentsDiv, "Figure: US Presidents tenure in months")
+}
+
+let drawPresidentsPlotRandom = function() {
+	let months = []
+	let max = 0
+	for (i = 0; i < 43; i++){
+		let x = Math.round(Math.random(100) * chartWidth)
+		if (x > max) {
+			max = x
+		}
+		let m = {'months' : x}
+		months.push(m)
+	}
+	animatePresidentsPlot(months, max)
 }
 
 let drawPresidentsPlotCSV = function() {
@@ -264,9 +212,11 @@ let drawPresidentsPlotCSV = function() {
 			}
 		}
 
-		animatePresidentsPlotCSV(jsonData, max)
+		animatePresidentsPlot(jsonData, max)
 	})	
 }
+
+drawPresidentsPlotRandom()
 
 
 // let barContainer = body.append("div")
