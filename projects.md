@@ -12,5 +12,8 @@ permalink: /projects
 
 [Happiness/GDP Correlation (Python)](http://nbviewer.jupyter.org/github/thomasnilsson/JupyterNotebooks/blob/master/Happiness%20Analysis.ipynb)
 
+DTU Courses:
+
 [Social Data Analysis and Visualization](https://thomasnilsson.github.io/02806)
+[Cryptology 1](https://thomasnilsson.github.io/Cryptology)
 
