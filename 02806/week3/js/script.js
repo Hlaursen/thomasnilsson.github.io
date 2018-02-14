@@ -1,131 +1,168 @@
-const h = 200
-const w = 500
-const padding = 30
-const body = d3.select("body")
+let h = 400
+let w = 1000
+let padding = 25
+let height = h - padding
+let width = w - padding
 
-let addParagraph = (c,t) => c
-	.append("p")
-	.text(t)
 
-let randomValuesX = function(l) {
-	let numbers = []
-	for (i = 1; i <= l; i++){
-		let x = Math.round(Math.random() * 1000)
-		let obj = { "x" : x }
-		numbers.push(obj)
-	}
-	return numbers
+
+let animationTime = 2000
+let body = d3.select("body")
+let content = body.selectAll()
+let barChartDiv = body.select("#barChartDiv")
+
+let parseRow = row => {
+  return {
+    "Index" : parseInt(row.Index),
+    "Month" : row.Month,
+    "Count" : parseInt(row.Count)
+  }
 }
 
-let randomValuesY = function(l) {
-	let numbers = []
-	for (i = 1; i <= l; i++){
-		let x = Math.round(Math.random() * 800)
-		let obj = { "y" : x }
-		numbers.push(obj)
-	}
-	return numbers
-}
-
-
-// Scatter Plot
-const scatterPlotDiv = body.select("#scatterPlotDiv")
-
-scatterPlotDiv
-	.attr("height", h + "px")
-	.attr("width", w + "px")
-
-let scatterPlotSvg = scatterPlotDiv
+let barSvg = barChartDiv
 	.append("svg")
 	.attr("width", w)
 	.attr("height", h)
-	// .attr("style", "outline: thin solid black")
-
-let animateScatterPlot = function(jsonData) {
-	// Remove old graphics
-	scatterPlotSvg.selectAll("circle").remove()
-
-	let xMax = d3.max(jsonData, p => p.x)
-	let yMax = d3.max(jsonData, p => p.y)
-
-	console.log(xMax)
-	console.log(yMax)
-
-	let xScale = d3.scaleLinear()
-		.domain([0, xMax])
-		.range([padding, w - padding])
-		.nice()
-
-	let yScale = d3.scaleLinear()
-		.domain([0, yMax])
-		.range([h - padding, padding]) //Reverse the y scale because grid
-		.nice()
-
-	let aScale = d3.scaleSqrt()
-		.domain([0, yMax])
-		.range([0, 10])
-
-	let xAxis = d3.axisBottom(xScale).ticks(5)
-
-	let yAxis = d3.axisLeft(yScale).ticks(5)
-
-	scatterPlotSvg.selectAll("circle")
-		.data(jsonData)
-		.enter()
-		.append("circle")
-		.attr("cx", d => xScale(d.x))
-		.attr("cy", d => yScale(d.y))
-		.attr("r", d => aScale(d.y))
-		.attr("fill", "white")
-		.attr("stroke", "black")
-	
-	scatterPlotSvg.append("g")
-		.attr("transform", "translate(0, " + (h - padding) + ")")
-		.call(xAxis)
-
-	scatterPlotSvg.append("g")
-		.attr("transform", "translate(" + padding + ", 0)")
-		.call(yAxis)
-	// scatterPlotSvg.selectAll("text")
-	// 	.data(jsonData)
-	// 	.enter()
-	// 	.append("text")
-	// 	.attr("x", d => xScale(d.x))
-	// 	.attr("y", d => yScale(d.y))
-	// 	.attr("font-size", 10)
-	// 	.text(d => d.x)
-}
-
-let drawScatterPlot = function() {
-	let length = 50
-	let X = randomValuesX(length)
-	let Y = randomValuesY(length)
-	let dataset = []
-	
-	for (i in X) {
-		let px = X[i].x
-		let py = Y[i].y
-		let p = {'x' : px, 'y' : py}
-		dataset.push(p)
-	}
-	console.log(dataset)
-
-	animateScatterPlot(dataset)
-}
-
-drawScatterPlot()
-addParagraph(scatterPlotDiv, "Figure: A scatter plot")
-
-let drawScatterPlotCSV = function() {
-	d3.csv('data/xy_data.csv', function(jsonData) {
-		console.log(jsonData)
-		animateScatterPlot(jsonData)
-	})	
-}
 
 
+d3.csv("../data/nydata.csv", allData => {
 
+  // Filter out data and convert relevant rows
+  let data = allData
+    .filter(d => d.Index == "0")
+    .map(d => parseRow(d))
+  console.log(data)
 
+  let N = 12
+  let maxY = d3.max(data, d => d.Count)
 
+  console.log(maxY)
 
+  let x = d3.scaleBand()
+    .domain(d3.range(N))
+    .rangeRound([padding, width])
+    .paddingInner(0.05)
 
+  console.log(x(5))
+
+  let xAxis = d3.axisBottom(x)
+
+  let y = d3.scaleLinear()
+    .domain([0, maxY])
+    .range([height, padding])
+
+  console.log(y(0))
+
+  let yAxis = d3.axisLeft(y)
+
+  // Bars
+  barSvg.selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", (d,i) => x(i))
+    .attr("y", d =>  y(d.Count))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - y(d.Count))
+    .attr("fill", d => "rgb(40,40,40)")
+
+    // Text
+    // barSvg.selectAll("text")
+    //   .data(jsonData)
+    //   .enter()
+    //   .append("text")
+    //   .text(d => h - d.x)
+    //   .attr("fill", "white")
+    //   .attr("font-size", "12")
+    //   .attr("x", (d,i) => x(i) + x.bandwidth() / 3)
+    //   .attr("y", (d,i) => h - y(d.x) - 8)
+
+    // Axes
+    barSvg.append("g")
+      .attr("transform", "translate(0, " + (h - padding) + ")")
+      .call(xAxis)
+
+    barSvg.append("g")
+      .attr("transform", "translate(" + padding + ", 0)")
+      .call(yAxis)
+
+})
+
+// let randomValuesX = function(l) {
+// 	let numbers = []
+// 	for (i = 1; i <= l; i++){
+// 		let x = Math.round(Math.random() * h)
+// 		let obj = { "x" : x }
+// 		numbers.push(obj)
+// 	}
+// 	return numbers
+// }
+//
+// let elements = 25
+// let jsonData = randomValuesX(elements)
+//
+// let N = jsonData.length
+//
+// let x = d3.scaleBand()
+//   .domain(d3.range(N))
+//   .rangeRound([padding, w - padding])
+//   .paddingInner(0.05)
+//
+// let xAxis = d3.axisBottom(x)
+//
+// let y = d3.scaleLinear()
+//   .domain([0, h])
+//   .range([h - padding, padding])
+//
+// let yAxis = d3.axisLeft(y).ticks(5)
+//
+// // Bars
+// barSvg.selectAll("rect")
+//   .data(jsonData)
+//   .enter()
+//   .append("rect")
+//   .attr("x", (d,i) => x(i))
+//   .attr("y", d =>  y(h - d.x) - padding)
+//   .attr("width", x.bandwidth())
+//   .attr("height", d => y(d.x))
+//   .attr("fill", d => "rgb(40,40," + Math.round(d.x * 5) + ")")
+//
+//   // Text
+//   barSvg.selectAll("text")
+//     .data(jsonData)
+//     .enter()
+//     .append("text")
+//     .text(d => h - d.x)
+//     .attr("fill", "white")
+//     .attr("font-size", "12")
+//     .attr("x", (d,i) => x(i) + x.bandwidth() / 3)
+//     .attr("y", (d,i) => h - y(d.x) - 8)
+//
+//   // Axes
+//   barSvg.append("g")
+//     .attr("transform", "translate(0, " + (h - padding) + ")")
+//     .call(xAxis)
+//
+//   barSvg.append("g")
+//     .attr("transform", "translate(" + padding + ", 0)")
+//     .call(yAxis)
+//
+// let updateChart = function(){
+//     let dataset = randomValuesX(elements)
+//
+//     barSvg.selectAll("rect")
+//       .data(dataset)
+//       .transition()
+//       .duration(animationTime)
+//       .attr("y", d => y(h - d.x) - padding)
+//       .attr("height", d => y(d.x))
+//       .attr("fill", d => "rgb(40,40," + Math.round(d.x * 5) + ")")
+//
+//       barSvg.selectAll("text")
+//         .data(dataset)
+//         .transition()
+//         .duration(animationTime)
+//         .text(d => h - d.x)
+//         .attr("y", (d,i) => h - y(d.x) - 8)
+//
+// }

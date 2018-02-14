@@ -25,7 +25,7 @@ let randomValuesX = function(l) {
 	return numbers
 }
 
-let elements = 950
+let elements = 25
 let jsonData = randomValuesX(elements)
 
 let N = jsonData.length
@@ -33,7 +33,7 @@ let N = jsonData.length
 let xScale = d3.scaleBand()
   .domain(d3.range(N))
   .rangeRound([padding, w - padding])
-  .paddingInner(0.5)
+  .paddingInner(0.05)
 
 let xAxis = d3.axisBottom(xScale)
 
