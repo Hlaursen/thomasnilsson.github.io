@@ -1,12 +1,12 @@
-let h = 200
-let w = 500
-let padding = 25
+let h = 350
+let w = 600
+let padding = 50
 let height = h - padding
 let width = w - padding
 let animationTime = 1000
 let body = d3.select("body")
 let histogramDiv = body.select("#histogramDiv")
-
+let title = histogramDiv.append("h4")
 let svg = histogramDiv
 	.append("svg")
 	.attr("width", w)
@@ -24,7 +24,6 @@ let innerPadding = 0.1
 let categoryIndex = 0
 let colours = ["#fb0d16", "#fc8c8c", "#117e11", "#d8e35a"]
 let titles = ["Fresh Fruit", "Storage Fruit", "Fresh Vegetable", "Storage Vegetale"]
-let title = histogramDiv.append("h4").text(titles[categoryIndex])
 let x, y, xAxis, yAxis, months, dataset
 
 let handleMouseOver = (rect, d) => {
@@ -60,7 +59,8 @@ let handleMouseOut = rect => {
 }
 
 d3.csv("data/nydata.csv", csvData => {
-	// Set title of histogram
+	// Set appropriate plot title
+  title.text(titles[categoryIndex])
 
 	// Parse all CSV data with helper function
   dataset = csvData.map(d => parseRow(d))
@@ -116,6 +116,15 @@ d3.csv("data/nydata.csv", csvData => {
       .attr("id", "yAxis")
       .attr("transform", "translate(" + padding + ", 0)")
       .call(yAxis)
+
+		// Text label for the y axis
+	  svg.append("text")
+      .attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.attr("y", padding / 2)
+      .attr("x", 0 - 10 - (h / 2))
+			.style("font-weight", "bold")
+			.text("# of Unique Kinds of Produce")
 
 })
 
