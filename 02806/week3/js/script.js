@@ -1,10 +1,12 @@
-let h = 400
-let w = 1000
+let h = 200
+let w = 500
 let padding = 25
 let height = h - padding
 let width = w - padding
 
 let indexToShow = 0
+let colors = ["rgb(40,40,40)", "rgb(66, 134, 244)", "rgb(89, 165, 94)", "rgb(214, 79, 64)"]
+let titles = ["Fresh Fruit", "Storage Fruit", "Fresh Vegetable", "Storage Vegetale"]
 
 let animationTime = 2000
 let body = d3.select("body")
@@ -19,30 +21,28 @@ let parseRow = row => {
   }
 }
 
-let barSvg = barChartDiv
+let svg = barChartDiv
 	.append("svg")
 	.attr("width", w)
 	.attr("height", h)
 
 d3.csv("data/nydata.csv", allData => {
 
+  barChartDiv.append("h4").text(titles[indexToShow])
+
   // Filter out data and convert relevant rows
   let data = allData
     .map(d => parseRow(d))
     .filter(d => d.Index == indexToShow)
-  console.log(data)
 
   let N = data.length
   let maxY = d3.max(data, d => d.Count)
-
-  console.log(maxY)
+  let months = data.map(d => d.Month)
 
   let x = d3.scaleBand()
-    .domain(d3.range(N))
+    .domain(months)
     .rangeRound([padding, width])
     .paddingInner(0.05)
-
-  console.log(x(5))
 
   let xAxis = d3.axisBottom(x)
 
@@ -50,27 +50,25 @@ d3.csv("data/nydata.csv", allData => {
     .domain([0, maxY])
     .range([height, padding])
 
-  console.log(y(0))
-
-  let yAxis = d3.axisLeft(y)
+  let yAxis = d3.axisLeft(y).ticks(5)
 
   // Bars
-  barSvg.selectAll("rect")
+  svg.selectAll("rect")
     .data(data)
     .enter()
     .append("rect")
-    .attr("x", (d,i) => x(i))
+    .attr("x", (d,i) => x(d.Month))
     .attr("y", d =>  y(d.Count))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.Count))
-    .attr("fill", d => "rgb(40,40,40)")
+    .attr("fill", d => colors[indexToShow])
 
     // Axes
-    barSvg.append("g")
+    svg.append("g")
       .attr("transform", "translate(0, " + (h - padding) + ")")
       .call(xAxis)
 
-    barSvg.append("g")
+    svg.append("g")
       .attr("transform", "translate(" + padding + ", 0)")
       .call(yAxis)
 
@@ -78,6 +76,7 @@ d3.csv("data/nydata.csv", allData => {
 
 let updateChart = () => {
   indexToShow = (indexToShow + 1) % 4
+  barChartDiv.selectAll("h4").text(titles[indexToShow])
   d3.csv("data/nydata.csv", allData => {
 
     // Filter out data and convert relevant rows
@@ -85,19 +84,14 @@ let updateChart = () => {
       .map(d => parseRow(d))
       .filter(d => d.Index == indexToShow)
 
-    console.log(data)
-
     let N = data.length
     let maxY = d3.max(data, d => d.Count)
-
-    console.log(maxY)
+    let months = data.map(d => d.Month)
 
     let x = d3.scaleBand()
-      .domain(d3.range(N))
+      .domain(months)
       .rangeRound([padding, width])
       .paddingInner(0.05)
-
-    console.log(x(5))
 
     let xAxis = d3.axisBottom(x)
 
@@ -105,20 +99,28 @@ let updateChart = () => {
       .domain([0, maxY])
       .range([height, padding])
 
-    console.log(y(0))
-
-    let yAxis = d3.axisLeft(y)
+    let yAxis = d3.axisLeft(y).ticks(5)
 
     // Bars
-    barSvg.selectAll("rect")
+    svg.selectAll("rect")
       .data(data)
       .transition()
-      .attr("x", (d,i) => x(i))
+      .duration(animationTime)
+      .attr("x", (d,i) => x(d.Month))
       .attr("y", d =>  y(d.Count))
       .attr("width", x.bandwidth())
       .attr("height", d => height - y(d.Count))
-      .attr("fill", d => "rgb(40,40,40)")
+      .attr("fill", d => colors[indexToShow])
 
+      svg.selectAll("g").remove()
 
+      // Axes
+      svg.append("g")
+        .attr("transform", "translate(0, " + (h - padding) + ")")
+        .call(xAxis)
+
+      svg.append("g")
+        .attr("transform", "translate(" + padding + ", 0)")
+        .call(yAxis)
   })
 }
