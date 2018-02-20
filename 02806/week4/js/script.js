@@ -3,19 +3,9 @@ let w = 500
 let padding = 25
 let height = h - padding
 let width = w - padding
-let animationTime = 2000
+let animationTime = 1000
 let body = d3.select("body")
 let histogramDiv = body.select("#histogramDiv")
-
-// let tooltipDiv = body.append("div")
-//     .attr("class", "tooltip")
-//     .style("opacity", 0)
-// let tooltipPointer = body.append("div")
-//     .attr("class", "arrow-down")
-//     .style("opacity", 0)
-
-
-let INNER_PADDING = 0.1
 
 let svg = histogramDiv
 	.append("svg")
@@ -30,75 +20,69 @@ let parseRow = row => {
   }
 }
 
-let DATA_INDEX = 0
-let COLORS = ["rgb(40,40,40)", "rgb(66, 134, 244)", "rgb(89, 165, 94)", "rgb(214, 79, 64)"]
-let TITLES = ["Fresh Fruit", "Storage Fruit", "Fresh Vegetable", "Storage Vegetale"]
-let MONTHS, ALL_DATA = []
-let x, y, xAxis, yAxis
+let innerPadding = 0.1
+let categoryIndex = 0
+let colours = ["#fb0d16", "#fc8c8c", "#117e11", "#d8e35a"]
+let titles = ["Fresh Fruit", "Storage Fruit", "Fresh Vegetable", "Storage Vegetale"]
+let title = histogramDiv.append("h4").text(titles[categoryIndex])
+let x, y, xAxis, yAxis, months, dataset
 
 let handleMouseOver = (rect, d) => {
-	// Log mouse coord
-	console.log(d3.event.clientX, d3.event.clientY)
+	// Use mouse coordinates for tooltip position
+	let xPos = d3.event.clientX - 40
+	let yPos = d3.event.clientY - 40
 
-	// var xPosition = parseFloat(d3.select(rect).attr("x")) + width/2
-	// var yPosition = parseFloat(d3.select(rect).attr("y")) / 2 + height
+	// Update the tooltip position
+  d3.select("#tooltip")
+		.style("left", xPos + "px")
+    .style("top", yPos + "px")
 
-	let xPosition = d3.event.clientX - 40
-	let yPosition = d3.event.clientY - 40
-	//Update the tooltip position and value
-    d3.select("#tooltip")
-	      .style("left", xPosition + "px")
-	      .style("top", yPosition + "px")
+	// Update the tooltip information
+	d3.select("#count").text(d.Count)
+  d3.select("#month").text(d.Month)
 
-		d3.select("#count").text(d.Count)
-    d3.select("#month").text(d.Month)
-    //Show the tooltip
-		d3.select("#tooltip").classed("hidden", false);
-	// tooltipDiv.transition().style("opacity", 0.95)
-	// tooltipDiv.html("<strong>" + d.Month + "</strong><br>" + d.Count)
-  //  .style("left", xPos + "px")
-  //  .style("top", yPos + "px")
-  //
-	// tooltipPointer.transition().style("opacity", 0.95)
-	// tooltipPointer.style("left", xPos + 15 + "px").style("top", yPos + 40 + "px")
+	// Show the tooltip
+	d3.select("#tooltip").classed("hidden", false)
 
-	d3.select(rect)
-		.attr("fill", "orange")
+	// Highlight the current bar
+	d3.select(rect).attr("fill", "steelblue")
 }
 
 let handleMouseOut = rect => {
-	//Hide the tooltip
-	d3.select("#tooltip").classed("hidden", true);
-	// tooltipDiv.transition().style("opacity", 0.0)
-	// tooltipPointer.transition().style("opacity", 0.0)
+	//Hide the tooltip again
+	d3.select("#tooltip").classed("hidden", true)
+
+	// Remove highlight from the current bar
 	d3.select(rect)
 		.transition()
 		.duration(250)
-		.attr("fill", COLORS[DATA_INDEX])
-  //
-	// d3.select("#tooltip").remove()
+		.attr("fill", colours[categoryIndex])
 }
 
 d3.csv("data/nydata.csv", csvData => {
-  histogramDiv
-		.append("h4")
-			.text(TITLES[DATA_INDEX])
-  // parse data
-  ALL_DATA = csvData.map(d => parseRow(d))
+	// Set title of histogram
 
-  // Filter out irrelevant data
-  data = ALL_DATA.filter(d => d.Index == DATA_INDEX)
+	// Parse all CSV data with helper function
+  dataset = csvData.map(d => parseRow(d))
 
+  // Filter out irrelevant categories by index
+  data = dataset.filter(d => d.Index == categoryIndex)
+
+	// Find highest y value
   let yMax = d3.max(data, d => d.Count)
-  MONTHS = data.map(d => d.Month)
 
+	// Find the x domain, the result here is: [Jan, Feb, Mar... Dec]
+  months = data.map(d => d.Month)
+
+	// x Scale
   x = d3.scaleBand()
-    .domain(MONTHS)
+    .domain(months)
     .rangeRound([padding, width])
-    .paddingInner(INNER_PADDING)
+    .paddingInner(innerPadding)
 
   xAxis = d3.axisBottom(x)
 
+	// y Scale
   y = d3.scaleLinear()
     .domain([0, yMax])
     .range([height, padding])
@@ -114,7 +98,7 @@ d3.csv("data/nydata.csv", csvData => {
     .attr("y", d =>  y(d.Count))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.Count))
-    .attr("fill", COLORS[DATA_INDEX])
+    .attr("fill", colours[categoryIndex])
 		.on("mouseover", function(d) {
 			handleMouseOver(this, d)
 		})
@@ -122,11 +106,12 @@ d3.csv("data/nydata.csv", csvData => {
 			handleMouseOut(this)
 		})
 
-    // Axes
+    // Make x axis with a g-element
     svg.append("g")
       .attr("transform", "translate(0, " + (h - padding) + ")")
       .call(xAxis)
 
+		// Make y axis with another g-element
     svg.append("g")
       .attr("id", "yAxis")
       .attr("transform", "translate(" + padding + ", 0)")
@@ -135,19 +120,24 @@ d3.csv("data/nydata.csv", csvData => {
 })
 
 let updateChart = () => {
-  // Which category to display?
-  DATA_INDEX = (DATA_INDEX + 1) % 4
-  histogramDiv.selectAll("h4").text(TITLES[DATA_INDEX])
+  // Find out what category to display (0 - 3)
+  categoryIndex = (categoryIndex + 1) % 4
 
-  // Filter out irrelevant data
-  data = ALL_DATA.filter(d => d.Index == DATA_INDEX)
+	// Set appropriate plot title
+  title.text(titles[categoryIndex])
 
+  // Filter out irrelevant categories by index
+  data = dataset.filter(d => d.Index == categoryIndex)
+
+	// Find highest y value
   let yMax = d3.max(data, d => d.Count)
+
+
   y.domain([0, yMax])
 
   yAxis = d3.axisLeft(y).ticks(5)
 
-  // Redraw histogram bars
+  // Redraw histogram bars with new y values
   svg.selectAll("rect")
     .data(data)
     .transition()
@@ -155,8 +145,8 @@ let updateChart = () => {
     .attr("x", d => x(d.Month))
     .attr("y", d =>  y(d.Count))
     .attr("height", d => height - y(d.Count))
-    .attr("fill", COLORS[DATA_INDEX])
+    .attr("fill", colours[categoryIndex])
 
-    // Update y axis only
+    // Update y axis only (x hasn't changed)
     svg.selectAll("#yAxis").call(yAxis)
 }
